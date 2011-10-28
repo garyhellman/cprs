@@ -1,0 +1,3 @@
+runs  from eclipse using run-jetty-run plugin jetty v7
+talks to database
+
