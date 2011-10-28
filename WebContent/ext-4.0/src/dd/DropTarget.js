@@ -1,16 +1,32 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.dd.DropTarget
  * @extends Ext.dd.DDTarget
  * A simple class that provides the basic implementation needed to make any element a drop target that can have
  * draggable items dropped onto it.  The drop has no effect until an implementation of notifyDrop is provided.
- * @constructor
- * @param {Mixed} el The container element
- * @param {Object} config
  */
 Ext.define('Ext.dd.DropTarget', {
     extend: 'Ext.dd.DDTarget',
     requires: ['Ext.dd.ScrollManager'],
 
+    /**
+     * Creates new DropTarget.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
+     * @param {Object} config
+     */
     constructor : function(el, config){
         this.el = Ext.get(el);
 
@@ -27,20 +43,20 @@ Ext.define('Ext.dd.DropTarget', {
     /**
      * @cfg {String} ddGroup
      * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
-     * interact with other drag drop objects in the same group (defaults to undefined).
+     * interact with other drag drop objects in the same group.
      */
     /**
-     * @cfg {String} overClass
-     * The CSS class applied to the drop target element while the drag source is over it (defaults to "").
+     * @cfg {String} [overClass=""]
+     * The CSS class applied to the drop target element while the drag source is over it.
      */
     /**
-     * @cfg {String} dropAllowed
-     * The CSS class returned to the drag source when drop is allowed (defaults to "x-dd-drop-ok").
+     * @cfg {String} [dropAllowed="x-dd-drop-ok"]
+     * The CSS class returned to the drag source when drop is allowed.
      */
     dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
     /**
-     * @cfg {String} dropNotAllowed
-     * The CSS class returned to the drag source when drop is not allowed (defaults to "x-dd-drop-nodrop").
+     * @cfg {String} [dropNotAllowed="x-dd-drop-nodrop"]
+     * The CSS class returned to the drag source when drop is not allowed.
      */
     dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 
@@ -116,3 +132,4 @@ Ext.define('Ext.dd.DropTarget', {
         }
     }
 });
+

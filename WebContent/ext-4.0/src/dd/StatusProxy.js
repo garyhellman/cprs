@@ -1,18 +1,35 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.dd.StatusProxy
  * A specialized drag proxy that supports a drop status icon, {@link Ext.Layer} styles and auto-repair.  This is the
  * default drag proxy used by all Ext.dd components.
- * @constructor
- * @param {Object} config
  */
 Ext.define('Ext.dd.StatusProxy', {
     animRepair: false,
 
+    /**
+     * Creates new StatusProxy.
+     * @param {Object} config (optional) Config object.
+     */
     constructor: function(config){
         Ext.apply(this, config);
         this.id = this.id || Ext.id();
         this.proxy = Ext.createWidget('component', {
             floating: true,
+            stateful: false,
             id: this.id,
             html: '<div class="' + Ext.baseCSSPrefix + 'dd-drop-icon"></div>' +
                   '<div class="' + Ext.baseCSSPrefix + 'dd-drag-ghost"></div>',
@@ -23,20 +40,20 @@ Ext.define('Ext.dd.StatusProxy', {
 
         this.el = this.proxy.el;
         this.el.show();
-        this.el.setVisibilityMode(Ext.core.Element.VISIBILITY);
+        this.el.setVisibilityMode(Ext.Element.VISIBILITY);
         this.el.hide();
 
         this.ghost = Ext.get(this.el.dom.childNodes[1]);
         this.dropStatus = this.dropNotAllowed;
     },
     /**
-     * @cfg {String} dropAllowed
-     * The CSS class to apply to the status element when drop is allowed (defaults to "x-dd-drop-ok").
+     * @cfg {String} [dropAllowed="x-dd-drop-ok"]
+     * The CSS class to apply to the status element when drop is allowed.
      */
     dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
     /**
-     * @cfg {String} dropNotAllowed
-     * The CSS class to apply to the status element when drop is not allowed (defaults to "x-dd-drop-nodrop").
+     * @cfg {String} [dropNotAllowed="x-dd-drop-nodrop"]
+     * The CSS class to apply to the status element when drop is not allowed.
      */
     dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 
@@ -78,7 +95,7 @@ Ext.define('Ext.dd.StatusProxy', {
             html.style.margin = "0";
             this.ghost.dom.appendChild(html);
         }
-        var el = this.ghost.dom.firstChild; 
+        var el = this.ghost.dom.firstChild;
         if(el){
             Ext.fly(el).setStyle('float', 'none');
         }
@@ -94,7 +111,7 @@ Ext.define('Ext.dd.StatusProxy', {
 
     /**
      * Returns the ghost element
-     * @return {Ext.core.Element} el
+     * @return {Ext.Element} el
      */
     getGhost : function(){
         return this.ghost;
@@ -138,7 +155,7 @@ Ext.define('Ext.dd.StatusProxy', {
     /**
      * Causes the proxy to return to its position of origin via an animation.  Should be called after an
      * invalid drop operation by the item being dragged.
-     * @param {Array} xy The XY position of the element ([x, y])
+     * @param {Number[]} xy The XY position of the element ([x, y])
      * @param {Function} callback The function to call after the repair is complete.
      * @param {Object} scope The scope (<code>this</code> reference) in which the callback function is executed. Defaults to the browser window.
      */

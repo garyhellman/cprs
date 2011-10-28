@@ -1,9 +1,28 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @author Ed Spencer
  * @class Ext.data.writer.Xml
  * @extends Ext.data.writer.Writer
- * 
- * <p>Writer that outputs model data in XML format</p>
+
+This class is used to write {@link Ext.data.Model} data to the server in an XML format.
+The {@link #documentRoot} property is used to specify the root element in the XML document.
+The {@link #record} option is used to specify the element name for each record that will make
+up the XML document.
+
+ * @markdown
  */
 Ext.define('Ext.data.writer.Xml', {
     
@@ -82,3 +101,4 @@ Ext.define('Ext.data.writer.Xml', {
         return request;
     }
 });
+

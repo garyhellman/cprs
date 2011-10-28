@@ -1,23 +1,36 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.selection.CellModel
  * @extends Ext.selection.Model
- * @private
  */
 Ext.define('Ext.selection.CellModel', {
     extend: 'Ext.selection.Model',
     alias: 'selection.cellmodel',
     requires: ['Ext.util.KeyNav'],
-    
+
     /**
      * @cfg {Boolean} enableKeyNav
-     * Turns on/off keyboard navigation within the grid. Defaults to true.
+     * Turns on/off keyboard navigation within the grid.
      */
     enableKeyNav: true,
-    
+
     /**
      * @cfg {Boolean} preventWrap
      * Set this configuration to true to prevent wrapping around of selection as
-     * a user navigates to the first or last column. Defaults to false.
+     * a user navigates to the first or last column.
      */
     preventWrap: false,
 
@@ -32,7 +45,7 @@ Ext.define('Ext.selection.CellModel', {
              * @param {Number} column The column index deselected
              */
             'deselect',
-            
+
             /**
              * @event select
              * Fired after a cell is selected
@@ -43,7 +56,7 @@ Ext.define('Ext.selection.CellModel', {
              */
             'select'
         );
-        this.callParent(arguments);    
+        this.callParent(arguments);
     },
 
     bindComponent: function(view) {
@@ -66,7 +79,7 @@ Ext.define('Ext.selection.CellModel', {
 
     initKeyNav: function(view) {
         var me = this;
-        
+
         if (!view.rendered) {
             view.on('render', Ext.Function.bind(me.initKeyNav, me, [view], 0), me, {single: true});
             return;
@@ -87,7 +100,7 @@ Ext.define('Ext.selection.CellModel', {
             scope: me
         });
     },
-    
+
     getHeaderCt: function() {
         return this.primaryView.headerCt;
     },
@@ -103,11 +116,11 @@ Ext.define('Ext.selection.CellModel', {
     onKeyLeft: function(e, t) {
         this.move('left', e);
     },
-    
+
     onKeyRight: function(e, t) {
         this.move('right', e);
     },
-    
+
     move: function(dir, e) {
         var me = this,
             pos = me.primaryView.walkCells(me.getCurrentPosition(), dir, e, me.preventWrap);
@@ -123,14 +136,14 @@ Ext.define('Ext.selection.CellModel', {
     getCurrentPosition: function() {
         return this.position;
     },
-    
+
     /**
      * Sets the current position
      * @param {Object} position The position to set.
      */
     setCurrentPosition: function(pos) {
         var me = this;
-        
+
         if (me.position) {
             me.onCellDeselect(me.position);
         }

@@ -7,6 +7,17 @@
  * http://loiane.com.br (Portuguese)
  */
 
+/*
+ * CREATE TABLE  contact (
+  CONTACT_ID int NOT NULL IDENTITY,
+  CONTACT_EMAIL varchar(255) NOT NULL,
+  CONTACT_NAME varchar(255) NOT NULL,
+  CONTACT_PHONE varchar(255) NOT NULL,
+  PRIMARY KEY (CONTACT_ID)
+) 
+ */
+
+
 DROP TABLE IF EXISTS `braziljs`.`contact`;
 CREATE TABLE  `braziljs`.`contact` (
   `CONTACT_ID` int(11) NOT NULL AUTO_INCREMENT,

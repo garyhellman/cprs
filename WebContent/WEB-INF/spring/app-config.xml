@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
 	<!-- Scans the classpath of this application for @Components to deploy as beans -->
-	<context:component-scan base-package="br.com.braziljs.loiane" />
+	<context:component-scan base-package="br.com.braziljs.loiane, org.acs.cprs" />
 	
 	<!-- Configures the @Controller programming model -->
 	<mvc:annotation-driven />

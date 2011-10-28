@@ -1,6 +1,6 @@
-Ext.define('BrazilJS.store.Contacts', {
+Ext.define('CPRS.store.Contacts', {
     extend: 'Ext.data.Store',
-    model: 'BrazilJS.model.Contact',
+    model: 'CPRS.model.Contact',
     autoLoad: true,
     pageSize: 35,
     autoLoad: {start: 0, limit: 35},

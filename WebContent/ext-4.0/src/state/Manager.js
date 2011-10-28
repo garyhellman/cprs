@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.state.Manager
  * This is the global state manager. By default all components that are "state aware" check this class
@@ -27,7 +41,7 @@ Ext.define('Ext.state.Manager', {
     
     /**
      * Configures the default state provider for your application
-     * @param {Provider} stateProvider The state provider to set
+     * @param {Ext.state.Provider} stateProvider The state provider to set
      */
     setProvider : function(stateProvider){
         this.provider = stateProvider;
@@ -36,8 +50,8 @@ Ext.define('Ext.state.Manager', {
     /**
      * Returns the current value for a key
      * @param {String} name The key name
-     * @param {Mixed} defaultValue The default value to return if the key lookup does not match
-     * @return {Mixed} The state data
+     * @param {Object} defaultValue The default value to return if the key lookup does not match
+     * @return {Object} The state data
      */
     get : function(key, defaultValue){
         return this.provider.get(key, defaultValue);
@@ -46,7 +60,7 @@ Ext.define('Ext.state.Manager', {
     /**
      * Sets the value for a key
      * @param {String} name The key name
-     * @param {Mixed} value The state data
+     * @param {Object} value The state data
      */
      set : function(key, value){
         this.provider.set(key, value);
@@ -62,7 +76,7 @@ Ext.define('Ext.state.Manager', {
 
     /**
      * Gets the currently configured state provider
-     * @return {Provider} The state provider
+     * @return {Ext.state.Provider} The state provider
      */
     getProvider : function(){
         return this.provider;

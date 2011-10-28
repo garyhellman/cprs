@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import br.com.braziljs.loiane.model.Contact;
 import br.com.braziljs.loiane.model.ContactWrapper;
 import br.com.braziljs.loiane.service.ContactService;
-import br.com.braziljs.loiane.util.ExtJSReturn;
+import br.com.braziljs.loiane.util.ExtJSReturn001;
 
 /**
  * Controller - Spring
@@ -42,11 +42,11 @@ public class ContactController  {
 			
 			int total = contactService.getTotalContacts();
 
-			return ExtJSReturn.mapOK(contacts, total);
+			return ExtJSReturn001.mapOK(contacts, total);
 
 		} catch (Exception e) {
 
-			return ExtJSReturn.mapError("Error retrieving Contacts from database.");
+			return ExtJSReturn001.mapError("Error retrieving Contacts from database.");
 		}
 	}
 	
@@ -57,11 +57,11 @@ public class ContactController  {
 
 			List<Contact> contacts = contactService.create(data.getData());
 
-			return ExtJSReturn.mapOK(contacts);
+			return ExtJSReturn001.mapOK(contacts);
 
 		} catch (Exception e) {
 
-			return ExtJSReturn.mapError("Error trying to create contact.");
+			return ExtJSReturn001.mapError("Error trying to create contact.");
 		}
 	}
 	
@@ -71,11 +71,11 @@ public class ContactController  {
 
 			List<Contact> contacts = contactService.update(data.getData());
 
-			return ExtJSReturn.mapOK(contacts);
+			return ExtJSReturn001.mapOK(contacts);
 
 		} catch (Exception e) {
 
-			return ExtJSReturn.mapError("Error trying to update contact.");
+			return ExtJSReturn001.mapError("Error trying to update contact.");
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class ContactController  {
 
 		} catch (Exception e) {
 
-			return ExtJSReturn.mapError("Error trying to delete contact.");
+			return ExtJSReturn001.mapError("Error trying to delete contact.");
 		}
 	}
 	

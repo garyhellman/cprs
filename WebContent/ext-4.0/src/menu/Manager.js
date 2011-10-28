@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.menu.Manager
  * Provides a common registry of all menus on a page.
@@ -100,10 +114,16 @@ Ext.define('Ext.menu.Manager', {
     onMouseDown: function(e) {
         var me = this,
             active = me.active,
-            lastShow = me.lastShow;
+            lastShow = me.lastShow,
+            target = e.target;
 
         if (Ext.Date.getElapsed(lastShow) > 50 && active.length > 0 && !e.getTarget('.' + Ext.baseCSSPrefix + 'menu')) {
             me.hideAll();
+            // in IE, if we mousedown on a focusable element, the focus gets cancelled and the focus event is never
+            // fired on the element, so we'll focus it here
+            if (Ext.isIE && Ext.fly(target).focusable()) {
+                target.focus();
+            }
         }
     },
 

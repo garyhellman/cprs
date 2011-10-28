@@ -1,6 +1,19 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 describe("Ext.Error", function() { 
-    var global,
-        consoleWarningMsg = 'An uncaught error was raised with the following data:';
+    var global;
 
     beforeEach(function() {
         global = Ext.global;
@@ -9,6 +22,9 @@ describe("Ext.Error", function() {
         Ext.global = {
             console: {
                 dir: function(s) {
+                    return s;
+                },
+                error: function(s) {
                     return s;
                 },
                 warn: function(s) {
@@ -35,13 +51,13 @@ describe("Ext.Error", function() {
                 }
             });
         
-            it("should log a warning to the console", function() {
-                spyOn(Ext.global.console, 'warn');
+            it("should log an error to the console", function() {
+                spyOn(Ext.global.console, 'error');
                 try {
                     Ext.Error.raise('foo');
                 } 
                 catch (err) {}
-                expect(Ext.global.console.warn).toHaveBeenCalledWith(consoleWarningMsg);
+                expect(Ext.global.console.error).toHaveBeenCalledWith('[E] foo');
             });
         
             it("should log the error object to the console", function() {
@@ -98,13 +114,13 @@ describe("Ext.Error", function() {
                 }
             });
         
-            it("should log a warning to the console", function() {
-                spyOn(Ext.global.console, 'warn');
+            it("should log an error to the console", function() {
+                spyOn(Ext.global.console, 'error');
                 try {
                     Ext.Error.raise({msg: 'foo'});
                 } 
                 catch (err) {}
-                expect(Ext.global.console.warn).toHaveBeenCalledWith(consoleWarningMsg);
+                expect(Ext.global.console.error).toHaveBeenCalledWith('[E] foo');
             });
         
             it("should log the error object to the console", function() {
@@ -232,3 +248,4 @@ describe("Ext.Error", function() {
         });
     });
 });
+

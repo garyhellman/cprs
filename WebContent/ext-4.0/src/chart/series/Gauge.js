@@ -1,9 +1,23 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.chart.series.Gauge
  * @extends Ext.chart.series.Series
  * 
  * Creates a Gauge Chart. Gauge Charts are used to show progress in a certain variable. There are two ways of using the Gauge chart.
- * One is setting a store element into the Gauge and selecting the field to be used from that store. Another one is instanciating the
+ * One is setting a store element into the Gauge and selecting the field to be used from that store. Another one is instantiating the
  * visualization and using the `setValue` method to adjust the value you want.
  *
  * A chart/series configuration for the Gauge visualization could look like this:
@@ -53,10 +67,9 @@ Ext.define('Ext.chart.series.Gauge', {
     highlightDuration: 150,
 
     /**
-     * @cfg {String} angleField
+     * @cfg {String} angleField (required)
      * The store record field name to be used for the pie angles.
      * The values bound to this field name must be positive real numbers.
-     * This parameter is required.
      */
     angleField: false,
 
@@ -67,7 +80,7 @@ Ext.define('Ext.chart.series.Gauge', {
     needle: false,
     
     /**
-     * @cfg {Boolean|Number} donut
+     * @cfg {Boolean/Number} donut
      * Use the entire disk or just a fraction of it for the gauge. Default's false.
      */
     donut: false,
@@ -134,7 +147,7 @@ Ext.define('Ext.chart.series.Gauge', {
     //@private updates some onbefore render parameters.
     initialize: function() {
         var me = this,
-            store = me.chart.substore || me.chart.store;
+            store = me.chart.getChartStore();
         //Add yFields to be used in Legend.js
         me.yField = [];
         if (me.label.field) {
@@ -235,7 +248,7 @@ Ext.define('Ext.chart.series.Gauge', {
     drawSeries: function() {
         var me = this,
             chart = me.chart,
-            store = chart.substore || chart.store,
+            store = chart.getChartStore(),
             group = me.group,
             animate = me.chart.animate,
             axis = me.chart.axes.get(0),
@@ -451,4 +464,5 @@ Ext.define('Ext.chart.series.Gauge', {
         return me.colorArrayStyle[index % me.colorArrayStyle.length];
     }
 });
+
 

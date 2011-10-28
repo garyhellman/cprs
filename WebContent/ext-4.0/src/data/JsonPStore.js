@@ -1,9 +1,21 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.data.JsonPStore
  * @extends Ext.data.Store
- * @ignore
  * @private
- * <p><b>NOTE:</b> This class is in need of migration to the new API.</p>
  * <p>Small helper class to make creating {@link Ext.data.Store}s from different domain JSON data easier.
  * A JsonPStore will be automatically configured with a {@link Ext.data.reader.Json} and a {@link Ext.data.proxy.JsonP JsonPProxy}.</p>
  * <p>A store configuration would be something like:<pre><code>
@@ -34,8 +46,6 @@ stcCallback({
  * An object literal of this form could also be used as the {@link #data} config option.</p>
  * <p><b>*Note:</b> Although not listed here, this class accepts all of the configuration options of
  * <b>{@link Ext.data.reader.Json JsonReader}</b> and <b>{@link Ext.data.proxy.JsonP JsonPProxy}</b>.</p>
- * @constructor
- * @param {Object} config
  * @xtype jsonpstore
  */
 Ext.define('Ext.data.JsonPStore', {
@@ -52,3 +62,4 @@ Ext.define('Ext.data.JsonPStore', {
         }));
     }
 });
+

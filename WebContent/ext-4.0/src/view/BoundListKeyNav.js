@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * @class Ext.view.BoundListKeyNav
  * @extends Ext.util.KeyNav
@@ -10,9 +24,8 @@ Ext.define('Ext.view.BoundListKeyNav', {
     requires: 'Ext.view.BoundList',
 
     /**
-     * @cfg {Ext.view.BoundList} boundList
-     * @required
-     * The {@link Ext.view.BoundList} instance for which key navigation will be managed. This is required.
+     * @cfg {Ext.view.BoundList} boundList (required)
+     * The {@link Ext.view.BoundList} instance for which key navigation will be managed.
      */
 
     constructor: function(el, config) {
