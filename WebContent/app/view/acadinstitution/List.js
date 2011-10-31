@@ -8,6 +8,7 @@ Ext.define('CPRS.view.acadinstitution.List' ,{
 
     title : 'Academic Institutions',
     store: 'AcadInstitutions',
+	closable: true,
 
     columns: [{
     	header: "Id",

@@ -8,6 +8,7 @@ Ext.define('CPRS.view.contact.List' ,{
 
     title : 'Contacts',
     store: 'Contacts',
+	closable: true,
 
     columns: [{
     	header: "NAME",
