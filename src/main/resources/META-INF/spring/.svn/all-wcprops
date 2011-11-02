@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/7/trunk/screencasts/SpringRooDictionaryService/src/main/resources/META-INF/spring
+END
+database.properties
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/!svn/ver/7/trunk/screencasts/SpringRooDictionaryService/src/main/resources/META-INF/spring/database.properties
+END
+applicationContext.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/!svn/ver/7/trunk/screencasts/SpringRooDictionaryService/src/main/resources/META-INF/spring/applicationContext.xml
+END
