@@ -36,7 +36,7 @@ Ext.application({
         'Quakes', 
         'Reviewers', 
 ////        'NotifyReviewers', 
-//        'Schools', 
+        'Schools', 
         'Navigation'
 //		   , 
 //        'PollChart' 

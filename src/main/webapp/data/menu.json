@@ -23,7 +23,7 @@
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000016", 
+		    	"text": i18n.menu_000016, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
@@ -37,7 +37,7 @@
 		    "expanded": "true", 
 		    "children":[
 		    	{
-		    	"text": "doccat_doccat", 
+		    	"text": i18n.doccat_doccat, 
 		    	"iconCls": "icon-users",
 		    	"view": "doccatlist", 	    	
 		    	leaf:true,
@@ -55,43 +55,43 @@
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_00004", 
+		    	"text": i18n.menu_00004, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_00005", 
+		    	"text": i18n.menu_00005, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_00006", 
+		    	"text": i18n.menu_00006, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "user_users", 
+		    	"text": i18n.user_users, 
 		    	"iconCls": "icon-users",
 		    	"view": "userlist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000011", 
+		    	"text": i18n.menu_000011, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000012", 
+		    	"text": i18n.menu_000012, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000013", 
+		    	"text": i18n.menu_000013, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
@@ -105,13 +105,13 @@
 		    "expanded": "true", 
 		    "children":[
 		    	{
-	 	    	"text": "menu_000015", 
+	 	    	"text": i18n.menu_000015, 
 		    	"iconCls": "icon-users",
 		    	"view": "reviewerlist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000016", 
+		    	"text": i18n.menu_000016, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
@@ -125,25 +125,25 @@
 		    "expanded": "true", 
 		    "children":[
 			    {
-		    	"text": "menu_00007", 
+		    	"text": i18n.menu_00007, 
 		    	"iconCls": "icon-users",
 		    	"view": "statelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_00008", 
+		    	"text": i18n.menu_00008, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_00009", 
+		    	"text": i18n.menu_00009, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "home_home", 
+		    	"text": i18n.home_home, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
@@ -155,13 +155,13 @@
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "menu_000014", 
+		    	"text": i18n.menu_000014, 
 		    	"iconCls": "icon-users",
 		    	"view": "homelist", 	    	
 		    	leaf:true,
 		    	"roles": ["ROLE_ADMIN"]
 		    	},{
-		    	"text": "school_school", 
+		    	"text": i18n.school_school, 
 		    	"iconCls": "icon-users",
 		    	"view": "schoollist", 	    	
 		    	leaf:true,
