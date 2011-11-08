@@ -1,7 +1,7 @@
 Ext.define('CPRS.controller.Reviewers', {
     extend: 'Ext.app.Controller',
-    //    stores: ['Reviewers'],
-    //    models: ['Reviewer'],
+    stores: ['Reviewers', 'AffSchools'],
+    models: ['Reviewer'],
     
     views: ['reviewer.List', 'reviewer.Edit'],
     refs: [{
@@ -34,12 +34,29 @@ Ext.define('CPRS.controller.Reviewers', {
     },
     
     editReviewer: function(grid, record){
+		var me = this;
         console.log('Double clicked on ' + record.get('reviewer'));
-                var view = Ext.widget('revieweredit');
+        
+        //console.log('Count in affschStore ' + record.getAffSchoolsStore().count() );
+        
+        var view = Ext.widget('revieweredit');
     
-        		view.down('form').loadRecord(record);
-                var form = this.getReviewerEditForm().getForm();
-                form.loadRecord(record);
+        view.down('form').loadRecord(record);
+
+        var MyReviewer = Ext.ModelManager.getModel('CPRS.model.Reviewer'); 
+        MyReviewer.load(record.data.id, {
+        	success: function(reviewer) {
+        		console.log("Reviewer: " + reviewer.get('reviewer'));
+        	}
+        });
+
+        // me.getReviewerEditForm().bind(record);
+        //me.getAffSchoolsStore().load();
+        view.bind(record, me.getAffSchoolsStore());
+        		
+                //var form = this.getReviewerEditForm().getForm();
+                //form.loadRecord(record);
+                
         //        form.setValues({
         //            'roleIds': Ext.Array.map(record.raw.roles, function(item){
         //                return item.id;
@@ -57,5 +74,6 @@ Ext.define('CPRS.controller.Reviewers', {
     
               this.getReviewersStore().sync();
     }
+    
     
 });

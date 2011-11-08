@@ -1,4 +1,5 @@
 Ext.require(['Ext.form.*', 'Ext.layout.container.Column', 'Ext.tab.Panel']);
+var affSchArray = new Array();
 
 Ext.define('CPRS.view.reviewer.Edit', {
     extend: 'Ext.window.Window',
@@ -20,7 +21,8 @@ Ext.define('CPRS.view.reviewer.Edit', {
         console.log('Initialized Edit Reviewer Component!');
         
         var me = this;
-
+        affSchArray = ['1', '2', '5'];
+        
 	    var ds = Ext.create('Ext.data.ArrayStore', {
 	        data: [[123,'One Hundred Twenty Three'],
 	            ['1', 'One'], ['2', 'Two'], ['3', 'Three'], ['4', 'Four'], ['5', 'Five'],
@@ -243,7 +245,8 @@ Ext.define('CPRS.view.reviewer.Edit', {
 							store: ds,
 							displayField: 'text',
 							valueField: 'value',
-							value: ['1', '2', '3'],
+							value: affSchArray,
+							//value: ['1', '2', '3'],
 							
 							allowBlank: false,
 							// minSelections: 2,
@@ -287,5 +290,45 @@ Ext.define('CPRS.view.reviewer.Edit', {
         
         
         me.callParent(arguments);
+    },
+    
+    /**
+     * Used to bind a store to this dataview.
+     * Delegates to bindStore and also shows this view
+     * @param {Ext.data.Model} record The record to bind
+     * @param {Ext.data.Store} store The reviews store used by the application
+     */
+    bind: function(record, store) {
+    	console.log('in reviewer edit bind function: ' + record.data.id + ' ' + record.data.reviewer + ' ' + record.data.email );
+        //put the affschools into the store and bind the store to this dataview(?)
+        // store.loadData(record.data.affschools || []);
+        //affSchArray = record.data.affschools;
+    	console.log('in reviewer edit bind function: store.count():: ' + store.count() );
+    	console.log('in reviewer edit bind function: affSchArray[0]:: ' + affSchArray[0]);
+    	console.log('bind: ' + affschoolsStore);
+//    	store.load();
+//    	console.log('in reviewer edit bind function: store.count():: ' + store.count() );
+        //this.dataview.bindStore(store);
+    	//affSchArray
+    	//var afschs = record.affschools().getAt(0).get("value");
+    	
+/*
+    	//var user = record.data;
+        var revee = Ext.ModelManager.getModel('CPRS.model.Reviewer');
+        console.log("Affiliated Schools for " + revee);
+        
+        
+        this.revee = record;
+        console.log("Affiliated Schools for " + revee);
+
+        console.log("Affiliated Schools for " + revee.get('reviewer') + ":");
+
+        //iterate over the Orders for each User
+        revee.affschools().each(function(affschool) {
+            console.log("Value: " + affschool.getValue() + ", which contains items:");
+
+        })
+*/    	
     }
+    
 });

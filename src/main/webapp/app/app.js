@@ -19,7 +19,7 @@ Ext.application({
 	controllers: [ 
 	              'AcadInstitutions',
 	              'Contacts',
-//        'Homes', 
+	              'Homes', 
 //        'Persons', 
 ////        'States', 
 //        'Users', 
