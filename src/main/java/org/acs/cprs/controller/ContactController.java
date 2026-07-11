@@ -4,103 +4,73 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import org.acs.cprs.model.Contact;
 import org.acs.cprs.model.ContactWrapper;
 import org.acs.cprs.service.ContactService;
-import org.acs.cprs.util.ExtJSReturn001;
+import org.acs.cprs.util.ExtJSReturn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Controller - Spring
- * 
- * Sample project presented at BrazilJS
- * Brazilian JavaScript Conference
- * Fortaleza - Ceará - 13-14 May 2011
- * http://braziljs.com.br/2011
- * 
- * @author Loiane Groner
- * http://loianegroner.com (English)
- * http://loiane.com (Portuguese)
- */
-@Controller
-public class ContactController  {
+@RestController
+public class ContactController {
 
-	private ContactService contactService;
-	
-	@RequestMapping(value="/contact/view.action")
-	public @ResponseBody Map<String,? extends Object> view(@RequestParam int start, @RequestParam int limit) throws Exception {
+    private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
-		try{
+    private final ContactService contactService;
 
-			List<Contact> contacts = contactService.getContactList(start,limit);
-			
-			int total = contactService.getTotalContacts();
+    public ContactController(ContactService contactService) {
+        this.contactService = contactService;
+    }
 
-			return ExtJSReturn001.mapOK(contacts, total);
+    @RequestMapping("/contact/view.action")
+    public Map<String, ?> view(@RequestParam int start, @RequestParam int limit) {
+        try {
+            List<Contact> contacts = contactService.getContactList(start, limit);
+            long total = contactService.getTotalContacts();
+            return ExtJSReturn.mapOK(contacts, total);
+        } catch (Exception e) {
+            logger.error("Failed to load contacts", e);
+            return ExtJSReturn.mapError("Error retrieving Contacts from database.");
+        }
+    }
 
-		} catch (Exception e) {
+    @PostMapping("/contact/create.action")
+    public Map<String, ?> create(@RequestBody ContactWrapper data) {
+        try {
+            List<Contact> contacts = contactService.create(data.getData());
+            return ExtJSReturn.mapOK(contacts);
+        } catch (Exception e) {
+            logger.error("Failed to create contact", e);
+            return ExtJSReturn.mapError("Error trying to create contact.");
+        }
+    }
 
-			return ExtJSReturn001.mapError("Error retrieving Contacts from database.");
-		}
-	}
-	
-	@RequestMapping(value="/contact/create.action")
-	public @ResponseBody Map<String,? extends Object> create(@RequestBody ContactWrapper data) throws Exception {
+    @PostMapping("/contact/update.action")
+    public Map<String, ?> update(@RequestBody ContactWrapper data) {
+        try {
+            List<Contact> contacts = contactService.update(data.getData());
+            return ExtJSReturn.mapOK(contacts);
+        } catch (Exception e) {
+            logger.error("Failed to update contact", e);
+            return ExtJSReturn.mapError("Error trying to update contact.");
+        }
+    }
 
-		try{
-
-			List<Contact> contacts = contactService.create(data.getData());
-
-			return ExtJSReturn001.mapOK(contacts);
-
-		} catch (Exception e) {
-
-			return ExtJSReturn001.mapError("Error trying to create contact.");
-		}
-	}
-	
-	@RequestMapping(value="/contact/update.action")
-	public @ResponseBody Map<String,? extends Object> update(@RequestBody ContactWrapper data) throws Exception {
-		try{
-
-			List<Contact> contacts = contactService.update(data.getData());
-
-			return ExtJSReturn001.mapOK(contacts);
-
-		} catch (Exception e) {
-
-			return ExtJSReturn001.mapError("Error trying to update contact.");
-		}
-	}
-	
-	@RequestMapping(value="/contact/delete.action")
-	public @ResponseBody Map<String,? extends Object> delete(@RequestBody ContactWrapper data) throws Exception {
-		
-		try{
-			
-			contactService.delete(data.getData());
-
-			Map<String,Object> modelMap = new HashMap<String,Object>(3);
-			modelMap.put("success", true);
-
-			return modelMap;
-
-		} catch (Exception e) {
-
-			return ExtJSReturn001.mapError("Error trying to delete contact.");
-		}
-	}
-	
-
-	@Autowired
-	public void setContactService(ContactService contactService) {
-		this.contactService = contactService;
-	}
-
+    @PostMapping("/contact/delete.action")
+    public Map<String, ?> delete(@RequestBody ContactWrapper data) {
+        try {
+            contactService.delete(data.getData());
+            Map<String, Object> modelMap = new HashMap<>();
+            modelMap.put("success", true);
+            return modelMap;
+        } catch (Exception e) {
+            logger.error("Failed to delete contact", e);
+            return ExtJSReturn.mapError("Error trying to delete contact.");
+        }
+    }
 }

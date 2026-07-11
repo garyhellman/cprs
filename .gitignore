@@ -1,3 +1,10 @@
-build
-
-target
+node_modules/
+.frontend/
+frontend/cprs/node_modules/
+frontend/cprs/build/
+frontend/cprs/generatedFiles/
+target/
+.idea/
+*.iml
+.DS_Store
+package-lock.json
