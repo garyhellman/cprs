@@ -1,0 +1,84 @@
+package org.acs.cprs.rules;
+
+import org.acs.cprs.rules.model.StudentAssignmentFact;
+import org.acs.cprs.rules.model.ReviewerCapacityFact;
+
+rule "Assign student to affiliated reviewer"
+    salience 300
+    when
+        $student : StudentAssignmentFact(
+            assigned == false,
+            $schoolId : affiliatedSchoolId
+        )
+        $reviewer : ReviewerCapacityFact(
+            hasCapacity() == true,
+            isAffiliatedWith($schoolId) == true
+        )
+    then
+        $student.setAssigned(true);
+        $student.setAssignedReviewerId($reviewer.getReviewerId());
+        $student.setAssignedReviewerName($reviewer.getReviewerName());
+        $student.setMatchedRule("affiliated-school");
+        $reviewer.incrementLoad();
+        update($student);
+        update($reviewer);
+end
+
+rule "Assign student by specialty and region"
+    salience 200
+    when
+        $student : StudentAssignmentFact(
+            assigned == false,
+            $region : region,
+            $specialty : specialty
+        )
+        $reviewer : ReviewerCapacityFact(
+            region == $region,
+            specialty == $specialty,
+            hasCapacity() == true
+        )
+    then
+        $student.setAssigned(true);
+        $student.setAssignedReviewerId($reviewer.getReviewerId());
+        $student.setAssignedReviewerName($reviewer.getReviewerName());
+        $student.setMatchedRule("specialty-region");
+        $reviewer.incrementLoad();
+        update($student);
+        update($reviewer);
+end
+
+rule "Assign student by region and capacity"
+    salience 100
+    when
+        $student : StudentAssignmentFact(
+            assigned == false,
+            $region : region
+        )
+        $reviewer : ReviewerCapacityFact(
+            region == $region,
+            hasCapacity() == true
+        )
+    then
+        $student.setAssigned(true);
+        $student.setAssignedReviewerId($reviewer.getReviewerId());
+        $student.setAssignedReviewerName($reviewer.getReviewerName());
+        $student.setMatchedRule("region-capacity");
+        $reviewer.incrementLoad();
+        update($student);
+        update($reviewer);
+end
+
+rule "Fallback assign to any reviewer with capacity"
+    salience 10
+    when
+        $student : StudentAssignmentFact(assigned == false)
+        $reviewer : ReviewerCapacityFact(hasCapacity() == true)
+    then
+        $student.setAssigned(true);
+        $student.setAssignedReviewerId($reviewer.getReviewerId());
+        $student.setAssignedReviewerName($reviewer.getReviewerName());
+        $student.setMatchedRule("fallback-capacity");
+        $reviewer.incrementLoad();
+        update($student);
+        update($reviewer);
+end
