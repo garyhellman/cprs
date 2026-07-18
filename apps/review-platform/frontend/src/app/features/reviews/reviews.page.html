@@ -1,0 +1,44 @@
+<section class="page">
+  <header>
+    <h1>Student reviews</h1>
+    <p>Written feedback from a student about a professor.</p>
+  </header>
+
+  <form class="form" (ngSubmit)="create()">
+    <label>
+      Student
+      <select [(ngModel)]="studentId" name="studentId">
+        @for (s of students(); track s.id) {
+          <option [ngValue]="s.id">{{ s.firstName }} {{ s.lastName }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Professor
+      <select [(ngModel)]="professorId" name="professorId">
+        @for (p of professors(); track p.id) {
+          <option [ngValue]="p.id">{{ p.firstName }} {{ p.lastName }}</option>
+        }
+      </select>
+    </label>
+    <label>Title <input [(ngModel)]="title" name="title" required /></label>
+    <label>Rating <input [(ngModel)]="rating" name="rating" type="number" min="1" max="5" /></label>
+    <label class="wide">Body <textarea [(ngModel)]="body" name="body" rows="3"></textarea></label>
+    <button type="submit">Submit review</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <ul class="list">
+    @for (r of items(); track r.id) {
+      <li>
+        <strong>{{ r.title }}</strong>
+        <span>student {{ r.studentId }} → professor {{ r.professorId }} · {{ r.status }} · ★ {{ r.rating ?? '—' }}</span>
+      </li>
+    } @empty {
+      <li class="empty">No reviews yet.</li>
+    }
+  </ul>
+</section>

@@ -1,0 +1,41 @@
+<section class="page">
+  <header>
+    <h1>Students</h1>
+    <p>Review authors who get Drools-assigned professors.</p>
+  </header>
+
+  <form class="form" (ngSubmit)="create()">
+    <label>
+      University
+      <select [(ngModel)]="universityId" name="universityId" (ngModelChange)="reload()">
+        @for (u of universities(); track u.id) {
+          <option [ngValue]="u.id">{{ u.name }}</option>
+        }
+      </select>
+    </label>
+    <label>First name <input [(ngModel)]="firstName" name="firstName" required /></label>
+    <label>Last name <input [(ngModel)]="lastName" name="lastName" required /></label>
+    <label>Email <input [(ngModel)]="email" name="email" type="email" required /></label>
+    <label>Department <input [(ngModel)]="department" name="department" /></label>
+    <label>Year level <input [(ngModel)]="yearLevel" name="yearLevel" type="number" min="1" max="10" /></label>
+    <label>Interests <input [(ngModel)]="interests" name="interests" placeholder="ai,ml" /></label>
+    <button type="submit">Add student</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <ul class="list">
+    @for (s of items(); track s.id) {
+      <li>
+        <div>
+          <strong>{{ s.firstName }} {{ s.lastName }}</strong>
+          <span>year {{ s.yearLevel || '—' }} · {{ s.department || '—' }} · {{ s.interests || 'no interests' }}</span>
+        </div>
+      </li>
+    } @empty {
+      <li class="empty">No students yet.</li>
+    }
+  </ul>
+</section>

@@ -1,0 +1,129 @@
+package rules;
+
+import org.acs.cprs.review.drools.facts.AssignmentRequest;
+import org.acs.cprs.review.drools.facts.ProfessorCandidate;
+import org.acs.cprs.review.drools.facts.ExistingReviewLink;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+/*
+ * Starter assignment rules — refine later.
+ * Gates set eligible=false (with update); bonuses mutate score without update
+ * so each bonus fires once per candidate.
+ */
+
+rule "SameUniversityRequired"
+    salience 100
+    when
+        $req : AssignmentRequest()
+        $cand : ProfessorCandidate( eligible == true, universityId != $req.universityId )
+    then
+        $cand.setEligible(false);
+        $cand.addReason("different university");
+        update($cand);
+end
+
+rule "WorkloadCapacityGate"
+    salience 90
+    when
+        $cand : ProfessorCandidate( eligible == true, activeReviewCount >= maxActiveReviews )
+    then
+        $cand.setEligible(false);
+        $cand.addReason("at capacity");
+        update($cand);
+end
+
+rule "RecentReviewConflict"
+    salience 95
+    when
+        $req : AssignmentRequest( $sid : studentId, $days : recentReviewLookbackDays )
+        $cand : ProfessorCandidate( eligible == true, $pid : professorId )
+        ExistingReviewLink(
+            studentId == $sid,
+            professorId == $pid,
+            reviewedAt != null,
+            reviewedAt.isAfter(Instant.now().minus($days, ChronoUnit.DAYS))
+        )
+    then
+        $cand.setEligible(false);
+        $cand.addReason("recent prior review");
+        update($cand);
+end
+
+rule "DepartmentMatchBonus"
+    salience 50
+    when
+        $req : AssignmentRequest( department != null && !department.isBlank() )
+        $cand : ProfessorCandidate(
+            eligible == true,
+            department != null,
+            department.equalsIgnoreCase($req.department)
+        )
+    then
+        $cand.addScore(30);
+        $cand.addReason("department match +30");
+end
+
+rule "InterestOverlapBonus"
+    salience 45
+    when
+        $req : AssignmentRequest( interests != null && !interests.isBlank() )
+        $cand : ProfessorCandidate(
+            eligible == true,
+            researchAreas != null && !researchAreas.isBlank()
+        )
+        eval( interestOverlapCount($req.getInterests(), $cand.getResearchAreas()) > 0 )
+    then
+        int overlaps = interestOverlapCount($req.getInterests(), $cand.getResearchAreas());
+        double bonus = Math.min(40.0, overlaps * 20.0);
+        $cand.addScore(bonus);
+        $cand.addReason("interest overlap +" + (int) bonus);
+end
+
+rule "LowWorkloadBonus"
+    salience 40
+    when
+        $cand : ProfessorCandidate( eligible == true, remainingCapacity() > 0 )
+    then
+        double bonus = Math.min(25.0, $cand.remainingCapacity() * 5.0);
+        $cand.addScore(bonus);
+        $cand.addReason("capacity bonus +" + (int) bonus);
+end
+
+rule "SeniorityForUpperYears"
+    salience 35
+    when
+        $req : AssignmentRequest( yearLevel != null, yearLevel >= 4 )
+        $cand : ProfessorCandidate(
+            eligible == true,
+            seniority == "SENIOR" || seniority == "TENURED"
+        )
+    then
+        $cand.addScore(15);
+        $cand.addReason("senior mentor for upper year +15");
+end
+
+rule "JuniorProfessorForLowerYears"
+    salience 30
+    when
+        $req : AssignmentRequest( yearLevel != null, yearLevel <= 2 )
+        $cand : ProfessorCandidate( eligible == true, seniority == "JUNIOR" )
+    then
+        $cand.addScore(10);
+        $cand.addReason("junior mentor for lower year +10");
+end
+
+function int interestOverlapCount(String interests, String researchAreas) {
+    if (interests == null || researchAreas == null) {
+        return 0;
+    }
+    String[] left = interests.toLowerCase().split("[,;\\s]+");
+    String right = researchAreas.toLowerCase();
+    int count = 0;
+    for (String token : left) {
+        if (!token.isBlank() && right.contains(token.trim())) {
+            count++;
+        }
+    }
+    return count;
+}

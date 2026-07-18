@@ -1,0 +1,15 @@
+<div class="shell">
+  <aside class="nav">
+    <p class="brand">{{ title }}</p>
+    <nav>
+      <a routerLink="/assignments" routerLinkActive="active">Assignments</a>
+      <a routerLink="/universities" routerLinkActive="active">Universities</a>
+      <a routerLink="/professors" routerLinkActive="active">Professors</a>
+      <a routerLink="/students" routerLinkActive="active">Students</a>
+      <a routerLink="/reviews" routerLinkActive="active">Reviews</a>
+    </nav>
+  </aside>
+  <main>
+    <router-outlet />
+  </main>
+</div>

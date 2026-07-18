@@ -1,3 +1,17 @@
-runs  from eclipse using run-jetty-run plugin jetty v7
-talks to database
+# CPRS
 
+Legacy ExtJS / Spring Roo admin app remains under `src/`.
+
+## New Review Platform
+
+Modern stack lives in `apps/review-platform/`:
+
+- Spring Boot 4 + Java 25 backend
+- Angular frontend
+- Drools 10 student→professor review assignment rules
+
+Start with:
+
+- `docs/plans/00-overview.md`
+- `docs/plans/05-cursor-skills-guide.md`
+- `apps/review-platform/README.md`

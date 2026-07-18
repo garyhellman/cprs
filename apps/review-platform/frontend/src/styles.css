@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,550&family=Source+Sans+3:wght@400;600&display=swap');
+
+:root {
+  --ink: #1c241c;
+  --muted: #5d6658;
+  --line: #d7d0c2;
+  --display: 'Fraunces', Georgia, serif;
+  --body: 'Source Sans 3', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  color: var(--ink);
+  font-family: var(--body);
+  background: #efe9dc;
+}
+
+h1,
+h2,
+.brand {
+  font-family: var(--display);
+}

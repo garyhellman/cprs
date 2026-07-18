@@ -1,0 +1,16 @@
+---
+description: Review Platform conventions (Spring Boot + Angular + Drools)
+globs:
+  - apps/review-platform/**
+  - docs/plans/**
+  - .cursor/skills/**
+alwaysApply: false
+---
+
+# Review Platform rules
+
+- New work belongs under `apps/review-platform/`. Do not modify legacy ExtJS/Roo under `src/` unless explicitly asked.
+- Backend API prefix is `/api/v1`.
+- Load the matching project skill before large changes: `spring-boot-java25`, `angular-review-ui`, `drools-assignment-rules`, or `cprs-domain-model`.
+- Keep Drools facts separate from JPA entities.
+- Prefer Flyway migrations over `ddl-auto=update` for shared schemas.
