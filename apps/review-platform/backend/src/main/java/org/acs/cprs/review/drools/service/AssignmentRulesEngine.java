@@ -4,6 +4,7 @@ import org.acs.cprs.review.drools.facts.AssignmentRequest;
 import org.acs.cprs.review.drools.facts.AssignmentSuggestion;
 import org.acs.cprs.review.drools.facts.ExistingReviewLink;
 import org.acs.cprs.review.drools.facts.ProfessorCandidate;
+import org.acs.cprs.review.drools.facts.WorkloadBalanceStats;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class AssignmentRulesEngine {
         KieSession session = kieContainer.newKieSession("assignmentKieSession");
         try {
             session.insert(request);
+            session.insert(buildWorkloadBalanceStats(candidates));
             for (ProfessorCandidate candidate : candidates) {
                 session.insert(candidate);
             }
@@ -57,5 +59,28 @@ public class AssignmentRulesEngine {
         } finally {
             session.dispose();
         }
+    }
+
+    /**
+     * Peer load stats among professors who still have capacity — used by
+     * {@code EqualizeStudentReviewLoad} so each professor receives a similar
+     * number of student-review assignments.
+     */
+    static WorkloadBalanceStats buildWorkloadBalanceStats(List<ProfessorCandidate> candidates) {
+        int min = Integer.MAX_VALUE;
+        int max = 0;
+        int count = 0;
+        for (ProfessorCandidate candidate : candidates) {
+            if (candidate.remainingCapacity() <= 0) {
+                continue;
+            }
+            count++;
+            min = Math.min(min, candidate.getActiveReviewCount());
+            max = Math.max(max, candidate.getActiveReviewCount());
+        }
+        if (count == 0) {
+            return new WorkloadBalanceStats(0, 0, 0);
+        }
+        return new WorkloadBalanceStats(min, max, count);
     }
 }

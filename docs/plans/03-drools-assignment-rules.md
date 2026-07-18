@@ -12,25 +12,35 @@ Rules will be refined later; this document defines the first working set shipped
 | `AssignmentRequest` | Student + university + optional department/interests + maxResults |
 | `ProfessorCandidate` | One professor in the same university pool |
 | `ExistingReviewLink` | Prior student↔professor review (conflict detection) |
+| `WorkloadBalanceStats` | Min/max `activeReviewCount` among peers with capacity |
 | `AssignmentSuggestion` | Output written/updated by rules (professorId, score, reasons) |
 
 ## Starter rules
 
 | # | Rule name | Salience | Logic | Effect |
 |---|---|---|---|---|
-| 1 | `SameUniversityRequired` | 100 | Candidate university ≠ student university | Retract candidate / mark ineligible |
-| 2 | `DepartmentMatchBonus` | 50 | Same department | +30 score |
-| 3 | `InterestOverlapBonus` | 45 | Shared research area / interest token | +20 per overlap (cap +40) |
-| 4 | `WorkloadCapacityGate` | 90 | `activeReviewCount >= maxActiveReviews` | Mark ineligible |
-| 5 | `LowWorkloadBonus` | 40 | More remaining capacity | + up to 25 based on free slots |
-| 6 | `SeniorityForUpperYears` | 35 | Student year ≥ 4 and professor SENIOR/TENURED | +15 |
-| 7 | `RecentReviewConflict` | 95 | Existing review between same pair within lookback | Mark ineligible |
-| 8 | `JuniorProfessorForLowerYears` | 30 | Student year ≤ 2 and professor JUNIOR | +10 |
+| 1 | `SameUniversityRequired` | 100 | Candidate university ≠ student university | Mark ineligible |
+| 2 | `RecentReviewConflict` | 95 | Existing review between same pair within lookback | Mark ineligible |
+| 3 | `WorkloadCapacityGate` | 90 | `activeReviewCount >= maxActiveReviews` | Mark ineligible |
+| 4 | `EqualizeStudentReviewLoad` | 60 | Prefer professors below peer max load | `+(max - active) * 20` so loads stay even |
+| 5 | `DepartmentMatchBonus` | 50 | Same department | +30 score |
+| 6 | `InterestOverlapBonus` | 45 | Shared research area / interest token | +20 per overlap (cap +40) |
+| 7 | `LowWorkloadBonus` | 40 | More remaining capacity | + up to 25 based on free slots |
+| 8 | `SeniorityForUpperYears` | 35 | Student year ≥ 4 and professor SENIOR/TENURED | +15 |
+| 9 | `JuniorProfessorForLowerYears` | 30 | Student year ≤ 2 and professor JUNIOR | +10 |
+
+## Equal load rule
+
+`EqualizeStudentReviewLoad` pushes assignments toward an **equal number of students
+per professor**. Before rules fire, the engine inserts `WorkloadBalanceStats` with the
+min/max `activeReviewCount` among professors who still have capacity. Candidates with
+fewer assigned students than the current peer maximum receive a large score boost
+(`gap * 20`), so the next suggestion fills the lightest loads first.
 
 ## Scoring model (v1)
 
 - Start each eligible candidate at **score = 0**.
-- Gates (rules 1, 4, 7) set `eligible = false` (never returned as suggestions).
+- Gates set `eligible = false` (never returned as suggestions).
 - Bonuses accumulate; final list sorted by score descending, truncated to `maxResults`.
 
 ## Rule refinement workflow
@@ -45,8 +55,8 @@ Rules will be refined later; this document defines the first working set shipped
 Student: CS dept, year 3, interests `ai,ml`, university U1  
 Professors at U1:
 
-- A: CS, TENURED, areas `ai`, load 1/5 → high score (dept + interest + capacity)
-- B: Math, SENIOR, areas `stats`, load 0/5 → lower (no dept match)
+- A: CS, TENURED, areas `ai`, load 1/5 → high score (dept + interest + capacity + equalize)
+- B: Math, SENIOR, areas `stats`, load 0/5 → equalize helps, but no dept match
 - C: CS, JUNIOR, areas `ai`, load 5/5 → ineligible (capacity)
 
-Drools returns A then B.
+Drools returns A then B (or B first if load gap outweighs dept match — tunable via salience/weights).

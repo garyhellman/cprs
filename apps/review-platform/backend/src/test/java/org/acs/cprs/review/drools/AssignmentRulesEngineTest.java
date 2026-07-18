@@ -70,6 +70,28 @@ class AssignmentRulesEngineTest {
         assertTrue(suggestions.isEmpty());
     }
 
+    @Test
+    void prefersProfessorWithFewerAssignedStudentsForEqualLoad() {
+        AssignmentRequest request = baseRequest();
+        request.setDepartment("CS");
+        request.setYearLevel(3);
+
+        // Same dept/seniority; only active review load differs
+        ProfessorCandidate heavy = candidate(1L, "CS", "systems", "SENIOR", 10, 4);
+        ProfessorCandidate light = candidate(2L, "CS", "systems", "SENIOR", 10, 1);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(heavy, light),
+                List.of()
+        );
+
+        assertEquals(2, suggestions.size());
+        assertEquals(2L, suggestions.getFirst().getProfessorId());
+        assertTrue(suggestions.getFirst().getScore() > suggestions.get(1).getScore());
+        assertTrue(suggestions.getFirst().getReason().contains("equalize load"));
+    }
+
     private static AssignmentRequest baseRequest() {
         AssignmentRequest request = new AssignmentRequest();
         request.setStudentId(100L);

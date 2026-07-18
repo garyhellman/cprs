@@ -33,6 +33,12 @@ Always `kieSession.dispose()` in `finally`.
 4. Set salience intentionally (gates high, bonuses mid/low).
 5. Add a focused unit test that inserts minimal facts and asserts eligibility/score.
 
+## Equal load
+
+`EqualizeStudentReviewLoad` uses `WorkloadBalanceStats` (built in `AssignmentRulesEngine`)
+to boost professors with fewer `activeReviewCount` values so student-review assignments
+stay roughly even across the peer set. Keep this rule when changing scoring weights.
+
 ## Fact guidelines
 
 - Keep Drools facts **decoupled** from JPA entities (copy fields into facts).

@@ -3,6 +3,7 @@ package rules;
 import org.acs.cprs.review.drools.facts.AssignmentRequest;
 import org.acs.cprs.review.drools.facts.ProfessorCandidate;
 import org.acs.cprs.review.drools.facts.ExistingReviewLink;
+import org.acs.cprs.review.drools.facts.WorkloadBalanceStats;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -48,6 +49,29 @@ rule "RecentReviewConflict"
         $cand.setEligible(false);
         $cand.addReason("recent prior review");
         update($cand);
+end
+
+/*
+ * Prefer professors with fewer active student-review assignments so load
+ * stays roughly equal across the peer set (max - active) * 20.
+ */
+rule "EqualizeStudentReviewLoad"
+    salience 60
+    when
+        $stats : WorkloadBalanceStats( candidateCount > 0 )
+        $cand : ProfessorCandidate( eligible == true, remainingCapacity() > 0 )
+    then
+        int gapBelowHeaviest = $stats.getMaxActiveReviewCount() - $cand.getActiveReviewCount();
+        if (gapBelowHeaviest > 0) {
+            double bonus = gapBelowHeaviest * 20.0;
+            $cand.addScore(bonus);
+            $cand.addReason("equalize load +" + (int) bonus
+                    + " (" + $cand.getActiveReviewCount() + " vs peer max "
+                    + $stats.getMaxActiveReviewCount() + ")");
+        } else if ($stats.getSpread() == 0) {
+            $cand.addScore(5);
+            $cand.addReason("equalize load +5 (loads already even)");
+        }
 end
 
 rule "DepartmentMatchBonus"
