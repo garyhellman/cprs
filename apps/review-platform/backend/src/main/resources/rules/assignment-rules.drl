@@ -13,14 +13,18 @@ import java.time.temporal.ChronoUnit;
  * so each bonus fires once per candidate.
  */
 
-rule "SameUniversityRequired"
+/*
+ * External review: do not assign a student to review a professor
+ * from the student's own university.
+ */
+rule "AvoidSameUniversity"
     salience 100
     when
         $req : AssignmentRequest()
-        $cand : ProfessorCandidate( eligible == true, universityId != $req.universityId )
+        $cand : ProfessorCandidate( eligible == true, universityId == $req.universityId )
     then
         $cand.setEligible(false);
-        $cand.addReason("different university");
+        $cand.addReason("same university");
         update($cand);
 end
 

@@ -43,8 +43,11 @@ public class StudentReviewService {
     public StudentReviewResponse create(StudentReviewRequest request) {
         Student student = studentService.require(request.studentId());
         Professor professor = professorService.require(request.professorId());
-        if (!student.getUniversity().getId().equals(professor.getUniversity().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student and professor must share a university");
+        if (student.getUniversity().getId().equals(professor.getUniversity().getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Student and professor must be from different universities"
+            );
         }
 
         StudentReview review = new StudentReview();

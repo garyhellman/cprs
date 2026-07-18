@@ -30,7 +30,7 @@ public class AssignmentRulesEngine {
         KieSession session = kieContainer.newKieSession("assignmentKieSession");
         try {
             session.insert(request);
-            session.insert(buildWorkloadBalanceStats(candidates));
+            session.insert(buildWorkloadBalanceStats(candidates, request.getUniversityId()));
             for (ProfessorCandidate candidate : candidates) {
                 session.insert(candidate);
             }
@@ -62,16 +62,24 @@ public class AssignmentRulesEngine {
     }
 
     /**
-     * Peer load stats among professors who still have capacity — used by
-     * {@code EqualizeStudentReviewLoad} so each professor receives a similar
-     * number of student-review assignments.
+     * Peer load stats among cross-university professors who still have capacity —
+     * used by {@code EqualizeStudentReviewLoad} so each professor receives a similar
+     * number of student-review assignments. Same-university peers are excluded
+     * (they are gated by {@code AvoidSameUniversity}).
      */
-    static WorkloadBalanceStats buildWorkloadBalanceStats(List<ProfessorCandidate> candidates) {
+    static WorkloadBalanceStats buildWorkloadBalanceStats(
+            List<ProfessorCandidate> candidates,
+            Long studentUniversityId
+    ) {
         int min = Integer.MAX_VALUE;
         int max = 0;
         int count = 0;
         for (ProfessorCandidate candidate : candidates) {
             if (candidate.remainingCapacity() <= 0) {
+                continue;
+            }
+            if (studentUniversityId != null
+                    && studentUniversityId.equals(candidate.getUniversityId())) {
                 continue;
             }
             count++;

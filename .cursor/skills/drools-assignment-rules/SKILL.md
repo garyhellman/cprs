@@ -33,6 +33,11 @@ Always `kieSession.dispose()` in `finally`.
 4. Set salience intentionally (gates high, bonuses mid/low).
 5. Add a focused unit test that inserts minimal facts and asserts eligibility/score.
 
+## Same-university avoidance
+
+`AvoidSameUniversity` marks candidates ineligible when `professor.universityId == student.universityId`.
+Do not reintroduce a same-university *requirement*. Accept/create APIs should also reject same-school pairs.
+
 ## Equal load
 
 `EqualizeStudentReviewLoad` uses `WorkloadBalanceStats` (built in `AssignmentRulesEngine`)

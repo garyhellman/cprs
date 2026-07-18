@@ -60,8 +60,8 @@ public class AssignmentService {
     @Transactional(readOnly = true)
     public SuggestAssignmentResponse suggest(SuggestAssignmentRequest request) {
         Student student = studentService.require(request.studentId());
-        List<Professor> professors = professorRepository
-                .findByUniversityIdAndDeletedFalseOrderByLastNameAsc(student.getUniversity().getId());
+        // Pool all professors; Drools AvoidSameUniversity drops same-school candidates
+        List<Professor> professors = professorRepository.findByDeletedFalseOrderByLastNameAsc();
 
         AssignmentRequest factRequest = new AssignmentRequest();
         factRequest.setStudentId(student.getId());
@@ -117,8 +117,11 @@ public class AssignmentService {
     public AssignmentResponse accept(AcceptAssignmentRequest request) {
         Student student = studentService.require(request.studentId());
         Professor professor = professorService.require(request.professorId());
-        if (!student.getUniversity().getId().equals(professor.getUniversity().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student and professor must share a university");
+        if (student.getUniversity().getId().equals(professor.getUniversity().getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Student and professor must be from different universities"
+            );
         }
 
         ReviewAssignment assignment = new ReviewAssignment();

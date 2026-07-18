@@ -10,7 +10,7 @@ Rules will be refined later; this document defines the first working set shipped
 | Fact | Role |
 |---|---|
 | `AssignmentRequest` | Student + university + optional department/interests + maxResults |
-| `ProfessorCandidate` | One professor in the same university pool |
+| `ProfessorCandidate` | One professor candidate (typically other universities) |
 | `ExistingReviewLink` | Prior student↔professor review (conflict detection) |
 | `WorkloadBalanceStats` | Min/max `activeReviewCount` among peers with capacity |
 | `AssignmentSuggestion` | Output written/updated by rules (professorId, score, reasons) |
@@ -19,7 +19,7 @@ Rules will be refined later; this document defines the first working set shipped
 
 | # | Rule name | Salience | Logic | Effect |
 |---|---|---|---|---|
-| 1 | `SameUniversityRequired` | 100 | Candidate university ≠ student university | Mark ineligible |
+| 1 | `AvoidSameUniversity` | 100 | Candidate university == student university | Mark ineligible (external review) |
 | 2 | `RecentReviewConflict` | 95 | Existing review between same pair within lookback | Mark ineligible |
 | 3 | `WorkloadCapacityGate` | 90 | `activeReviewCount >= maxActiveReviews` | Mark ineligible |
 | 4 | `EqualizeStudentReviewLoad` | 60 | Prefer professors below peer max load | `+(max - active) * 20` so loads stay even |
@@ -28,6 +28,12 @@ Rules will be refined later; this document defines the first working set shipped
 | 7 | `LowWorkloadBonus` | 40 | More remaining capacity | + up to 25 based on free slots |
 | 8 | `SeniorityForUpperYears` | 35 | Student year ≥ 4 and professor SENIOR/TENURED | +15 |
 | 9 | `JuniorProfessorForLowerYears` | 30 | Student year ≤ 2 and professor JUNIOR | +10 |
+
+## Same-university avoidance
+
+`AvoidSameUniversity` is a hard gate: a student must not be assigned to review a
+professor from their own university. The assignment service pools all professors;
+this rule (and accept/create validation) keep suggestions external-only.
 
 ## Equal load rule
 
@@ -53,10 +59,10 @@ fewer assigned students than the current peer maximum receive a large score boos
 ## Example scenario
 
 Student: CS dept, year 3, interests `ai,ml`, university U1  
-Professors at U1:
 
-- A: CS, TENURED, areas `ai`, load 1/5 → high score (dept + interest + capacity + equalize)
-- B: Math, SENIOR, areas `stats`, load 0/5 → equalize helps, but no dept match
-- C: CS, JUNIOR, areas `ai`, load 5/5 → ineligible (capacity)
+- A @ U2: CS, TENURED, areas `ai`, load 1/5 → high score (dept + interest + capacity + equalize)
+- B @ U2: Math, SENIOR, areas `stats`, load 0/5 → equalize helps, but no dept match
+- C @ U1: CS, TENURED, areas `ai`, load 0/5 → **ineligible** (same university)
+- D @ U2: CS, JUNIOR, areas `ai`, load 5/5 → ineligible (capacity)
 
-Drools returns A then B (or B first if load gap outweighs dept match — tunable via salience/weights).
+Drools returns A then B.
