@@ -27,8 +27,9 @@ Modern replacement path for the legacy CPRS ExtJS / Spring Roo admin app (`org.a
 ## Repo layout
 
 ```
+pom.xml             Spring Boot 4 executable JAR (Java 25 + Drools 10)
 apps/review-platform/
-  backend/          Spring Boot API + Drools
+  backend/src/      Spring Boot API + Drools sources (built by root pom)
   frontend/         Angular SPA
 docs/plans/         Architecture and roadmap
 .cursor/skills/     Agent skills for this stack

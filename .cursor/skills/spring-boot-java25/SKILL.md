@@ -14,6 +14,8 @@ description: Implement and extend the Review Platform Spring Boot 4 / Java 25 ba
 
 ## Layout
 
+Root `pom.xml` builds an executable **JAR** (Spring Boot 4). Sources live under:
+
 ```
 apps/review-platform/backend/src/main/java/org/acs/cprs/review/
   domain/       entities only
@@ -23,6 +25,8 @@ apps/review-platform/backend/src/main/java/org/acs/cprs/review/
   config/       beans (CORS, OpenAPI, Drools wiring lives in drools/)
   drools/       facts + Kie services (see drools-assignment-rules skill)
 ```
+
+Do not reintroduce WAR packaging, Jetty/Tomcat Maven plugins, AspectJ, Tiles, JSP, or Spring Roo.
 
 ## Conventions
 

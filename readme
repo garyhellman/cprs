@@ -4,11 +4,15 @@ Legacy ExtJS / Spring Roo admin app remains under `src/`.
 
 ## New Review Platform
 
-Modern stack lives in `apps/review-platform/`:
+Modern stack:
 
-- Spring Boot 4 + Java 25 backend
-- Angular frontend
-- Drools 10 student→professor review assignment rules
+- Root `pom.xml` — Spring Boot 4 executable **JAR** (Java 25 + Drools 10); legacy Roo/WAR deps removed
+- `apps/review-platform/backend/src` — API sources
+- `apps/review-platform/frontend` — Angular UI
+
+```bash
+mvn spring-boot:run
+```
 
 Start with:
 

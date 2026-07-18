@@ -76,7 +76,8 @@ Dev proxy: Angular → `http://localhost:8080`.
 
 | Concern | Guidance |
 |---|---|
-| Java 25 | Target `maven.compiler.release=25`. Env may use JDK 21 temporarily — raise to 25 in CI/dev. |
+| Java 25 | Target `maven.compiler.release=25` via root `pom.xml`. |
+| Packaging | Executable **JAR** via `spring-boot-maven-plugin` — not WAR/Jetty/Tomcat plugins. |
 | Drools 10 | Use `drools-bom` 10.x; avoid old `kie-spring` Boot autoconfig. |
 | Angular | Latest stable Angular with standalone components + signals where natural. |
-| Legacy CPRS | Do not modify `src/main/webapp/ext-4.0` or Roo XML config for this workstream. |
+| Legacy CPRS | Root pom no longer compiles Roo/ExtJS under `src/`; leave that tree untouched unless migrating. |

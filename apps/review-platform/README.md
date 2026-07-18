@@ -9,10 +9,13 @@ Plans and Cursor skills live at the repo root:
 
 ## Run backend
 
+The runnable Spring Boot 4 jar is defined by the **repo-root** `pom.xml` (not a WAR).
+
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64   # or your JDK 25
-cd apps/review-platform/backend
+cd ../..   # repo root
 mvn spring-boot:run
+# or: mvn -q package && java -jar target/cprs-0.1.0-SNAPSHOT.jar
 ```
 
 API: `http://localhost:8080/api/v1`  

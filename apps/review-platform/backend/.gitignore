@@ -1,6 +1,3 @@
-target/
+# Build output lives at the repo root (root pom.xml)
 .idea/
 *.iml
-.classpath
-.project
-.settings/
