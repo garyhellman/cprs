@@ -37,6 +37,15 @@ logging:
     org.acs.cprs.review: INFO
     org.drools: WARN
 
+app:
+  seed:
+    faker:
+      enabled: true
+      universities: 8
+      professors-per-university: 10
+      students-per-university: 25
+      seed: 42
+
 ---
 spring:
   config:
@@ -49,4 +58,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   h2:
     console:
+      enabled: false
+
+app:
+  seed:
+    faker:
       enabled: false

@@ -98,6 +98,13 @@
             <artifactId>kie-api</artifactId>
         </dependency>
 
+        <!-- Java Faker successor (Datafaker) for demo seed data -->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

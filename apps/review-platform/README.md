@@ -44,10 +44,22 @@ npm start
 
 Then open http://localhost:4200/
 
+## Demo data (Java Faker / Datafaker)
+
+On startup (default H2 profile), Datafaker loads collections in addition to the Flyway demo row:
+
+| Entity | Default count |
+|---|---|
+| Universities | 8 (+ Cascadia State from Flyway) |
+| Professors | 10 per generated university |
+| Students | 25 per generated university |
+
+Configure in `application.yml` under `app.seed.faker` (`enabled`, `universities`, `professors-per-university`, `students-per-university`, `seed`). Disabled on the `postgres` profile by default.
+
 ## Quick smoke flow
 
 1. Open http://localhost:8080/assignments
-2. Seed data already includes Cascadia State University, professors, and student Sam Rivera
+2. Pick a student (faker-generated or Sam Rivera from the Flyway demo)
 3. Click **Suggest professors** → Accept a Drools-ranked assignment
 4. Optionally create a review under **Reviews**
 
