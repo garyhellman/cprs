@@ -1,0 +1,40 @@
+<section class="page">
+  <header>
+    <h1>Universities</h1>
+    <p>Institutions that own professors and students.</p>
+  </header>
+
+  <form class="form" (ngSubmit)="create()">
+    <label>
+      Name
+      <input [(ngModel)]="name" name="name" required />
+    </label>
+    <label>
+      Code
+      <input [(ngModel)]="code" name="code" />
+    </label>
+    <label>
+      Country
+      <input [(ngModel)]="country" name="country" />
+    </label>
+    <button type="submit">Add university</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else {
+    <ul class="list">
+      @for (u of items(); track u.id) {
+        <li>
+          <strong>{{ u.name }}</strong>
+          <span>{{ u.code || '—' }} · {{ u.country || '—' }}</span>
+        </li>
+      } @empty {
+        <li class="empty">No universities yet.</li>
+      }
+    </ul>
+  }
+</section>

@@ -12,15 +12,32 @@
     </parent>
 
     <groupId>org.acs.cprs</groupId>
-    <artifactId>cprsadmin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>cprsadmin</name>
-    <description>CPRS Admin - Spring Boot 4 + ExtJS 8</description>
+    <artifactId>cprs</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>cprs</name>
+    <description>CPRS Review Platform — Spring Boot 4 API + Angular SPA</description>
 
     <properties>
         <java.version>25</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <drools.version>10.2.0</drools.version>
+        <frontend.workingDirectory>${project.basedir}/apps/review-platform/frontend</frontend.workingDirectory>
+        <frontend.distDirectory>${frontend.workingDirectory}/dist/frontend/browser</frontend.distDirectory>
+        <node.version>v22.14.0</node.version>
+        <skipFrontend>false</skipFrontend>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-bom</artifactId>
+                <version>${drools.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -32,15 +49,62 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>5.9</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
         </dependency>
+
+        <!-- Drools 10 — classpath KieContainer (no official Boot starter) -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-mvel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-xml-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-api</artifactId>
+        </dependency>
+
+        <!-- Java Faker successor (Datafaker) for demo seed data -->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -49,56 +113,86 @@
     </dependencies>
 
     <build>
+        <!-- Review Platform sources; legacy Roo/ExtJS under src/main/webapp is NOT packaged -->
+        <sourceDirectory>apps/review-platform/backend/src/main/java</sourceDirectory>
+        <testSourceDirectory>apps/review-platform/backend/src/test/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>apps/review-platform/backend/src/main/resources</directory>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>apps/review-platform/backend/src/test/resources</directory>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.1</version>
+                <configuration>
+                    <workingDirectory>${frontend.workingDirectory}</workingDirectory>
+                    <installDirectory>${project.build.directory}/frontend-node</installDirectory>
+                    <skip>${skipFrontend}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-ci</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>ci</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-frontend-build</id>
-                        <phase>generate-resources</phase>
+                        <id>copy-angular-spa</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <skip>${skipFrontend}</skip>
                             <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/frontend/cprs</directory>
-                                    <includes>
-                                        <include>index.html</include>
-                                        <include>app.js</include>
-                                        <include>main.js</include>
-                                        <include>favicon.ico</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/cprs/build/production/CPRS/generatedFiles/desktop</directory>
-                                    <targetPath>generatedFiles/desktop</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/cprs/build/development/CPRS/desktop</directory>
-                                    <targetPath>desktop</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/cprs/generatedFiles</directory>
-                                    <targetPath>generatedFiles</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/frontend/cprs/resources</directory>
-                                    <targetPath>resources</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.basedir}/src/main/resources/static-legacy</directory>
-                                    <targetPath>.</targetPath>
+                                    <directory>${frontend.distDirectory}</directory>
+                                    <filtering>false</filtering>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

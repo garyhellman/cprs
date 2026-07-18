@@ -1,0 +1,60 @@
+<section class="page">
+  <header>
+    <h1>Assignments</h1>
+    <p>Drools ranks professors for a student review assignment.</p>
+  </header>
+
+  <div class="toolbar">
+    <label>
+      Student
+      <select [(ngModel)]="studentId" name="studentId" (ngModelChange)="onStudentChange()">
+        @for (s of students(); track s.id) {
+          <option [ngValue]="s.id">{{ s.firstName }} {{ s.lastName }}</option>
+        }
+      </select>
+    </label>
+    <button type="button" (click)="suggest()">Suggest professors</button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <div class="columns">
+    <section>
+      <h2>Suggestions</h2>
+      <ul class="list">
+        @for (s of suggestions(); track s.professorId) {
+          <li>
+            <div>
+              <strong>{{ s.professorName }}</strong>
+              <span>score {{ s.score | number: '1.0-1' }} · {{ s.reason || 'no reasons' }}</span>
+            </div>
+            <button type="button" class="ghost" (click)="accept(s)">Accept</button>
+          </li>
+        } @empty {
+          <li class="empty">Run suggest to score professors.</li>
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2>Accepted</h2>
+      <ul class="list">
+        @for (a of accepted(); track a.id) {
+          <li>
+            <div>
+              <strong>Professor {{ a.professorId }}</strong>
+              <span>{{ a.status }} · score {{ a.score }} · {{ a.reason || '—' }}</span>
+            </div>
+          </li>
+        } @empty {
+          <li class="empty">No accepted assignments yet.</li>
+        }
+      </ul>
+    </section>
+  </div>
+</section>

@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: review-platform
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:reviewdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  h2:
+    console:
+      enabled: true
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    org.acs.cprs.review: INFO
+    org.drools: WARN
+
+app:
+  seed:
+    faker:
+      enabled: true
+      universities: 8
+      professors-per-university: 10
+      students-per-university: 25
+      seed: 42
+
+---
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:reviewdb}
+    username: ${DB_USER:review}
+    password: ${DB_PASSWORD:review}
+    driver-class-name: org.postgresql.Driver
+  h2:
+    console:
+      enabled: false
+
+app:
+  seed:
+    faker:
+      enabled: false

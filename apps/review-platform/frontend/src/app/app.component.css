@@ -1,0 +1,58 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+}
+
+.nav {
+  padding: 1.5rem 1.25rem;
+  border-right: 1px solid var(--line);
+  background: linear-gradient(180deg, #f3efe6 0%, #ebe4d6 100%);
+}
+
+.brand {
+  margin: 0 0 1.5rem;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+nav {
+  display: grid;
+  gap: 0.35rem;
+}
+
+nav a {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.45rem 0.55rem;
+}
+
+nav a.active,
+nav a:hover {
+  background: rgba(28, 36, 28, 0.08);
+}
+
+main {
+  padding: 2rem clamp(1rem, 3vw, 2.5rem);
+  background:
+    radial-gradient(circle at top right, rgba(120, 140, 90, 0.12), transparent 40%),
+    linear-gradient(180deg, #f7f4ec 0%, #efe9dc 100%);
+}
+
+@media (max-width: 800px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .nav {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  nav {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    overflow-x: auto;
+  }
+}

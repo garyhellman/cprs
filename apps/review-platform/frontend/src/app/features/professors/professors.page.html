@@ -1,0 +1,49 @@
+<section class="page">
+  <header>
+    <h1>Professors</h1>
+    <p>Candidates Drools can assign for student reviews.</p>
+  </header>
+
+  <form class="form" (ngSubmit)="create()">
+    <label>
+      University
+      <select [(ngModel)]="universityId" name="universityId" (ngModelChange)="reload()">
+        @for (u of universities(); track u.id) {
+          <option [ngValue]="u.id">{{ u.name }}</option>
+        }
+      </select>
+    </label>
+    <label>First name <input [(ngModel)]="firstName" name="firstName" required /></label>
+    <label>Last name <input [(ngModel)]="lastName" name="lastName" required /></label>
+    <label>Email <input [(ngModel)]="email" name="email" type="email" required /></label>
+    <label>Department <input [(ngModel)]="department" name="department" /></label>
+    <label>Research areas <input [(ngModel)]="researchAreas" name="researchAreas" placeholder="ai,ml" /></label>
+    <label>
+      Seniority
+      <select [(ngModel)]="seniority" name="seniority">
+        <option value="JUNIOR">Junior</option>
+        <option value="SENIOR">Senior</option>
+        <option value="TENURED">Tenured</option>
+      </select>
+    </label>
+    <button type="submit">Add professor</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <ul class="list">
+    @for (p of items(); track p.id) {
+      <li>
+        <div>
+          <strong>{{ p.firstName }} {{ p.lastName }}</strong>
+          <span>{{ p.department || '—' }} · {{ p.seniority }} · {{ p.researchAreas || 'no areas' }}</span>
+        </div>
+        <span class="meta">{{ p.activeReviewCount }}/{{ p.maxActiveReviews }} reviews</span>
+      </li>
+    } @empty {
+      <li class="empty">No professors yet.</li>
+    }
+  </ul>
+</section>

@@ -1,3 +1,20 @@
-runs  from eclipse using run-jetty-run plugin jetty v7
-talks to database
+# CPRS
 
+## Active app (Spring Boot 4 + Angular 20)
+
+```bash
+mvn spring-boot:run
+```
+
+Then open **http://localhost:8080/** for the Angular UI (API at `/api/v1`).
+
+- Root `pom.xml` — Boot 4 executable JAR; builds & packages Angular into `/static`
+- `apps/review-platform/backend/src` — API + Drools
+- `apps/review-platform/frontend` — Angular 20 SPA
+
+## Legacy (not served)
+
+`src/main/webapp` (Ext JS 4) is leftover from the old Roo WAR and is **not** packaged.
+See `src/main/webapp/LEGACY.md`.
+
+Docs: `docs/plans/00-overview.md`, `apps/review-platform/README.md`
