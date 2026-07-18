@@ -3,98 +3,48 @@ package org.acs.cprs.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.acs.cprs.model.Contact;
+import org.acs.cprs.repository.ContactRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.acs.cprs.dao.ContactDAO;
-import org.acs.cprs.model.Contact;
-
-/**
- * Contact Service
- * 
- * Sample project presented at BrazilJS
- * Brazilian JavaScript Conference
- * Fortaleza - Ceará - 13-14 May 2011
- * http://braziljs.com.br/2011
- * 
- * @author Loiane Groner
- * http://loianegroner.com (English)
- * http://loiane.com (Portuguese)
- */
 @Service
 public class ContactService {
-	
-	private ContactDAO contactDAO;
 
-	/**
-	 * Get all contacts
-	 * @return
-	 */
-	@Transactional(readOnly=true)
-	public List<Contact> getContactList(int start, int limit){
-		
-		return contactDAO.getContacts(start, limit);
-	}
-	
-	/**
-	 * Create new Contact/Contacts
-	 * @param data - json data from request
-	 * @return created contacts
-	 */
-	@Transactional
-	public List<Contact> create(Contact contact){
-		
-        List<Contact> newContacts = new ArrayList<Contact>();
-		
-		newContacts.add(contactDAO.saveContact(contact));
-		
-		return newContacts;
-	}
-	
-	
-	/**
-	 * Update contact/contacts
-	 * @param data - json data from request
-	 * @return updated contacts
-	 */
-	@Transactional
-	public List<Contact> update(Contact contact){
-		
-		List<Contact> returnContacts = new ArrayList<Contact>();
-		
-		returnContacts.add(contactDAO.saveContact(contact));
-		
-		return returnContacts;
-	}
-	
-	/**
-	 * Delete contact/contacts
-	 * @param contact - json data from request
-	 */
-	@Transactional
-	public void delete(Contact contact){
-		
-		contactDAO.deleteContact(contact.getId());
-	}
-	
-	/**
-	 * Get total of Contacts from database.
-	 * Need to set this value on ExtJS Store
-	 * @return
-	 */
-	public int getTotalContacts(){
+    private final ContactRepository contactRepository;
 
-		return contactDAO.getTotalContacts();
-	}
+    public ContactService(ContactRepository contactRepository) {
+        this.contactRepository = contactRepository;
+    }
 
-	/**
-	 * Spring use - DI
-	 * @param contactDAO
-	 */
-	@Autowired
-	public void setContactDAO(ContactDAO contactDAO) {
-		this.contactDAO = contactDAO;
-	}
-	
+    @Transactional(readOnly = true)
+    public List<Contact> getContactList(int start, int limit) {
+        int page = limit > 0 ? start / limit : 0;
+        return contactRepository.findAll(PageRequest.of(page, Math.max(limit, 1))).getContent();
+    }
+
+    @Transactional
+    public List<Contact> create(Contact contact) {
+        List<Contact> created = new ArrayList<>();
+        created.add(contactRepository.save(contact));
+        return created;
+    }
+
+    @Transactional
+    public List<Contact> update(Contact contact) {
+        List<Contact> updated = new ArrayList<>();
+        updated.add(contactRepository.save(contact));
+        return updated;
+    }
+
+    @Transactional
+    public void delete(Contact contact) {
+        contactRepository.deleteById(contact.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalContacts() {
+        return contactRepository.count();
+    }
 }

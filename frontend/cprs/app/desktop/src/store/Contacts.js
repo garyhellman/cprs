@@ -1,0 +1,39 @@
+Ext.define('CPRS.store.Contacts', {
+    extend: 'Ext.data.Store',
+    model: 'CPRS.model.Contact',
+    autoLoad: true,
+    pageSize: 35,
+    autoLoad: {start: 0, limit: 35},
+    
+    proxy: {
+        type: 'ajax',
+        api: {
+        	read : 'contact/view.action',
+            create : 'contact/create.action',
+            update: 'contact/update.action',
+            destroy: 'contact/delete.action'
+        },
+        reader: {
+            type: 'json',
+            rootProperty: 'data',
+            totalProperty: 'total',
+            successProperty: 'success'
+        },
+        writer: {
+            type: 'json',
+            writeAllFields: true,
+            encode: false,
+            rootProperty: 'data'
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+                Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });
+            }
+        }
+    }
+});
