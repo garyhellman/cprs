@@ -6,7 +6,7 @@ Modern replacement path for the legacy CPRS ExtJS / Spring Roo admin app (`org.a
 |---|---|---|
 | Backend | **Spring Boot 4 + Java 25** | First-class Java 25 support, virtual threads, modular autoconfigure |
 | Rules | **Drools 10** (classic KIE classpath container) | Assign students → professors for review creation; rules stay declarative and evolvable |
-| Frontend | **Angular** (standalone components) | Strong typing, routing, forms; clean REST client over the Boot API |
+| Frontend | **Angular 20** (standalone components) | Served from the Boot JAR at `/`; ExtJS under `src/main/webapp` is legacy and unused |
 | Database | **PostgreSQL** + Flyway | Relational model for universities / professors / students / reviews |
 | Local DB (dev) | **H2** (optional profile) | Fast bootstrap without Docker |
 

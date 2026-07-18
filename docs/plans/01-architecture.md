@@ -3,20 +3,15 @@
 ## System context
 
 ```
-┌─────────────┐     HTTPS/JSON      ┌──────────────────────────┐
-│  Angular SPA│ ──────────────────► │  Spring Boot 4 API       │
-│  (frontend) │ ◄────────────────── │  /api/v1/...             │
-└─────────────┘                     │                          │
-                                    │  ┌────────────────────┐  │
-                                    │  │ AssignmentService  │  │
-                                    │  │   + Drools KieSession│ │
-                                    │  └─────────┬──────────┘  │
-                                    │            │             │
-                                    │  ┌─────────▼──────────┐  │
-                                    │  │ JPA / Flyway       │  │
-                                    │  │ PostgreSQL         │  │
-                                    │  └────────────────────┘  │
-                                    └──────────────────────────┘
+Browser ──► http://localhost:8080/
+              │
+              ├─ / , /assignments, …   Angular 20 SPA (classpath:/static)
+              └─ /api/v1/...           Spring Boot 4 REST + Drools
+                    │
+                    ├─ AssignmentService + KieSession
+                    └─ JPA / Flyway (H2 or PostgreSQL)
+
+Legacy ExtJS under src/main/webapp is NOT packaged or served.
 ```
 
 ## Backend packages (`org.acs.cprs.review`)

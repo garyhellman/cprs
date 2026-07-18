@@ -16,11 +16,15 @@
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>cprs</name>
-    <description>CPRS Review Platform — Spring Boot 4 + Drools 10 API</description>
+    <description>CPRS Review Platform — Spring Boot 4 API + Angular SPA</description>
 
     <properties>
         <java.version>25</java.version>
         <drools.version>10.2.0</drools.version>
+        <frontend.workingDirectory>${project.basedir}/apps/review-platform/frontend</frontend.workingDirectory>
+        <frontend.distDirectory>${frontend.workingDirectory}/dist/frontend/browser</frontend.distDirectory>
+        <node.version>v22.14.0</node.version>
+        <skipFrontend>false</skipFrontend>
     </properties>
 
     <dependencyManagement>
@@ -102,7 +106,7 @@
     </dependencies>
 
     <build>
-        <!-- Review Platform sources; legacy Roo/ExtJS code under src/ is not compiled -->
+        <!-- Review Platform sources; legacy Roo/ExtJS under src/main/webapp is NOT packaged -->
         <sourceDirectory>apps/review-platform/backend/src/main/java</sourceDirectory>
         <testSourceDirectory>apps/review-platform/backend/src/test/java</testSourceDirectory>
         <resources>
@@ -116,6 +120,69 @@
             </testResource>
         </testResources>
         <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.1</version>
+                <configuration>
+                    <workingDirectory>${frontend.workingDirectory}</workingDirectory>
+                    <installDirectory>${project.build.directory}/frontend-node</installDirectory>
+                    <skip>${skipFrontend}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-ci</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>ci</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-angular-spa</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skipFrontend}</skip>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${frontend.distDirectory}</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

@@ -7,10 +7,12 @@ description: Implement Angular SPA features for the Review Platform. Use when bu
 
 ## Stack
 
-- Angular (standalone components)
+- Angular **20** (standalone components) under `apps/review-platform/frontend`
 - Feature folders under `src/app/features/`
 - Typed HTTP services in `core` or feature `data` folders
-- Dev proxy to Spring Boot (`localhost:8080`)
+- Production: Maven packages the SPA into the Boot JAR (`classpath:/static`); open `http://localhost:8080/`
+- Dev proxy: `npm start` → Angular on `:4200` proxies `/api` to Boot `:8080`
+- Do **not** revive ExtJS under `src/main/webapp`
 
 ## Layout
 

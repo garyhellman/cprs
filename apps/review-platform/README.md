@@ -1,42 +1,55 @@
 # Review Platform
 
-Spring Boot 4 (Java 25) + Angular + Drools 10 app for universities, professors, students, student reviews, and rule-based review assignments.
+Spring Boot 4 (Java 25) + **Angular 20** + Drools 10 app for universities, professors,
+students, student reviews, and rule-based review assignments.
 
 Plans and Cursor skills live at the repo root:
 
 - `docs/plans/` — architecture, data model, Drools rules, roadmap
 - `.cursor/skills/` — agent skills for this stack
 
-## Run backend
+> The ExtJS UI under `src/main/webapp` is **legacy and not served**. See `src/main/webapp/LEGACY.md`.
 
-The runnable Spring Boot 4 jar is defined by the **repo-root** `pom.xml` (not a WAR).
+## Run (API + Angular together)
+
+From the **repo root**, Maven builds Angular into the Boot JAR and serves it at `/`:
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-25-openjdk-amd64   # or your JDK 25
-cd ../..   # repo root
 mvn spring-boot:run
-# or: mvn -q package && java -jar target/cprs-0.1.0-SNAPSHOT.jar
 ```
 
-API: `http://localhost:8080/api/v1`  
-Default profile uses in-memory H2. Use `--spring.profiles.active=postgres` for PostgreSQL.
+Open **http://localhost:8080/** — Angular SPA  
+API: **http://localhost:8080/api/v1**
 
-## Run frontend
+Skip the frontend build (API-only / faster tests):
 
 ```bash
+mvn -DskipFrontend=true test
+mvn -DskipFrontend=true spring-boot:run
+```
+
+Default profile uses in-memory H2. Use `--spring.profiles.active=postgres` for PostgreSQL.
+
+## Frontend-only (hot reload)
+
+```bash
+# terminal 1 — API
+mvn -DskipFrontend=true spring-boot:run
+
+# terminal 2 — Angular 20 with proxy to :8080
 cd apps/review-platform/frontend
 npm start
 ```
 
-UI: `http://localhost:4200` (proxies `/api` → `:8080`)
+Then open http://localhost:4200/
 
 ## Quick smoke flow
 
-1. Create a university
-2. Create professors (vary department / seniority / capacity)
-3. Create a student with matching department/interests
-4. Open **Assignments** → Suggest → Accept
-5. Optionally create a review for that pair
+1. Open http://localhost:8080/assignments
+2. Seed data already includes Cascadia State University, professors, and student Sam Rivera
+3. Click **Suggest professors** → Accept a Drools-ranked assignment
+4. Optionally create a review under **Reviews**
 
 ## Drools starter rules
 
