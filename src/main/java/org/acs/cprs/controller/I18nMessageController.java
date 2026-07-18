@@ -1,48 +1,38 @@
 package org.acs.cprs.controller;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import tools.jackson.databind.ObjectMapper;
 
-import com.google.common.collect.Maps;
+import jakarta.servlet.http.HttpServletResponse;
 
-@Controller
+@RestController
 public class I18nMessageController {
 
-	private ObjectMapper objectMapper = new ObjectMapper();
-	private String prefix = "var i18n = ";
-	private String postfix = ";";
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-	@RequestMapping(value = "/i18n.action", method = RequestMethod.GET)
-	public void i18n(final HttpServletRequest request, final HttpServletResponse response, final Locale locale)
-			throws JsonGenerationException, JsonMappingException, IOException {
+    @GetMapping(value = "/i18n.action", produces = "application/x-javascript;charset=UTF-8")
+    public void i18n(HttpServletResponse response, Locale locale) throws IOException {
+        response.setContentType("application/x-javascript;charset=UTF-8");
+        ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
 
-		response.setContentType("application/x-javascript;charset=UTF-8");
+        Map<String, String> messages = new HashMap<>();
+        Enumeration<String> keys = bundle.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            messages.put(key, bundle.getString(key));
+        }
 
-		ResourceBundle rb = ResourceBundle.getBundle("messages", locale);
-
-		Map<String, String> messages = Maps.newHashMap();
-		Enumeration<String> e = rb.getKeys();
-		while (e.hasMoreElements()) {
-			String key = e.nextElement();
-			messages.put(key, rb.getString(key));
-		}
-
-		String output = prefix + objectMapper.writeValueAsString(messages) + postfix;
-		response.getOutputStream().write(output.getBytes(Charset.forName("UTF-8")));
-	}
-
+        String output = "var i18n = " + objectMapper.writeValueAsString(messages) + ";";
+        response.getOutputStream().write(output.getBytes(StandardCharsets.UTF_8));
+    }
 }
