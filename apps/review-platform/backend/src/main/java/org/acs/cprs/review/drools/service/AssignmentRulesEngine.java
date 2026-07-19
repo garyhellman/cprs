@@ -67,7 +67,7 @@ public class AssignmentRulesEngine {
      * number of student-review assignments. Same-university peers are excluded
      * (they are gated by {@code AvoidSameUniversity}).
      */
-    static WorkloadBalanceStats buildWorkloadBalanceStats(
+    public static WorkloadBalanceStats buildWorkloadBalanceStats(
             List<ProfessorCandidate> candidates,
             Long studentUniversityId
     ) {

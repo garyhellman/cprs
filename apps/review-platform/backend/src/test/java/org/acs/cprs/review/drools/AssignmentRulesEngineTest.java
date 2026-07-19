@@ -113,6 +113,139 @@ class AssignmentRulesEngineTest {
         assertTrue(sameSchool.getReasons().contains("same university") || !sameSchool.isEligible());
     }
 
+    @Test
+    void excludesProfessorsAtCapacity() {
+        AssignmentRequest request = baseRequest();
+        ProfessorCandidate full = candidate(1L, OTHER_UNIVERSITY, "CS", "ai", "SENIOR", 3, 3);
+        ProfessorCandidate open = candidate(2L, OTHER_UNIVERSITY, "CS", "ai", "SENIOR", 3, 1);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(full, open),
+                List.of()
+        );
+
+        assertEquals(1, suggestions.size());
+        assertEquals(2L, suggestions.getFirst().getProfessorId());
+        assertTrue(!full.isEligible());
+        assertTrue(full.getReasons().contains("at capacity"));
+    }
+
+    @Test
+    void awardsSeniorityBonusForUpperYearStudents() {
+        AssignmentRequest request = baseRequest();
+        request.setYearLevel(5);
+
+        ProfessorCandidate senior = candidate(1L, OTHER_UNIVERSITY, "Math", "stats", "SENIOR", 5, 0);
+        ProfessorCandidate junior = candidate(2L, OTHER_UNIVERSITY, "Math", "stats", "JUNIOR", 5, 0);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(senior, junior),
+                List.of()
+        );
+
+        assertEquals(2, suggestions.size());
+        assertEquals(1L, suggestions.getFirst().getProfessorId());
+        assertTrue(suggestions.getFirst().getReason().contains("senior mentor"));
+    }
+
+    @Test
+    void awardsJuniorBonusForLowerYearStudents() {
+        AssignmentRequest request = baseRequest();
+        request.setYearLevel(1);
+
+        ProfessorCandidate senior = candidate(1L, OTHER_UNIVERSITY, "Math", "stats", "SENIOR", 5, 0);
+        ProfessorCandidate junior = candidate(2L, OTHER_UNIVERSITY, "Math", "stats", "JUNIOR", 5, 0);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(senior, junior),
+                List.of()
+        );
+
+        assertEquals(2, suggestions.size());
+        assertEquals(2L, suggestions.getFirst().getProfessorId());
+        assertTrue(suggestions.getFirst().getReason().contains("junior mentor"));
+    }
+
+    @Test
+    void awardsInterestOverlapBonus() {
+        AssignmentRequest request = baseRequest();
+        request.setInterests("ai,nlp");
+
+        ProfessorCandidate match = candidate(1L, OTHER_UNIVERSITY, "Physics", "ai,vision", "SENIOR", 5, 0);
+        ProfessorCandidate none = candidate(2L, OTHER_UNIVERSITY, "Physics", "optics", "SENIOR", 5, 0);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(match, none),
+                List.of()
+        );
+
+        assertEquals(2, suggestions.size());
+        assertEquals(1L, suggestions.getFirst().getProfessorId());
+        assertTrue(suggestions.getFirst().getReason().contains("interest overlap"));
+    }
+
+    @Test
+    void allowsReviewOlderThanLookbackWindow() {
+        AssignmentRequest request = baseRequest();
+        request.setRecentReviewLookbackDays(30);
+        ProfessorCandidate candidate = candidate(10L, OTHER_UNIVERSITY, "CS", "ai", "SENIOR", 5, 0);
+
+        ExistingReviewLink oldLink = new ExistingReviewLink(
+                request.getStudentId(),
+                10L,
+                Instant.now().minus(90, ChronoUnit.DAYS)
+        );
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(candidate),
+                List.of(oldLink)
+        );
+
+        assertEquals(1, suggestions.size());
+        assertEquals(10L, suggestions.getFirst().getProfessorId());
+    }
+
+    @Test
+    void respectsMaxResultsLimit() {
+        AssignmentRequest request = baseRequest();
+        request.setMaxResults(1);
+        request.setDepartment("CS");
+
+        ProfessorCandidate a = candidate(1L, OTHER_UNIVERSITY, "CS", "ai", "SENIOR", 5, 0);
+        ProfessorCandidate b = candidate(2L, OTHER_UNIVERSITY, "CS", "ai", "SENIOR", 5, 1);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(a, b),
+                List.of()
+        );
+
+        assertEquals(1, suggestions.size());
+    }
+
+    @Test
+    void givesEvenLoadBonusWhenAllPeersMatch() {
+        AssignmentRequest request = baseRequest();
+
+        ProfessorCandidate a = candidate(1L, OTHER_UNIVERSITY, "History", "archives", "SENIOR", 5, 2);
+        ProfessorCandidate b = candidate(2L, OTHER_UNIVERSITY, "History", "archives", "SENIOR", 5, 2);
+
+        List<AssignmentSuggestion> suggestions = engine.evaluate(
+                request,
+                List.of(a, b),
+                List.of()
+        );
+
+        assertEquals(2, suggestions.size());
+        assertTrue(suggestions.getFirst().getReason().contains("loads already even")
+                || suggestions.get(1).getReason().contains("loads already even"));
+    }
+
     private static AssignmentRequest baseRequest() {
         AssignmentRequest request = new AssignmentRequest();
         request.setStudentId(100L);

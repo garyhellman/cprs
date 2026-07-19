@@ -1,0 +1,26 @@
+app:
+  seed:
+    faker:
+      enabled: false
+
+spring:
+  main:
+    banner-mode: "off"
+  datasource:
+    url: jdbc:h2:mem:review-test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: true
+  h2:
+    console:
+      enabled: false
+
+logging:
+  level:
+    org.acs.cprs.review: WARN
+    org.drools: ERROR
